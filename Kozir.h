@@ -11,8 +11,8 @@
 // Released to the public domain
 //
 
-#ifndef Cozir_h
-#define Cozir_h
+#ifndef Kozir_h
+#define Kozir_h
 
 #include "SoftwareSerial.h"
 

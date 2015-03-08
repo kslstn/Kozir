@@ -11,7 +11,7 @@
 // Released to the public domain
 //
 
-#include "Cozir.h"
+#include "Kozir.h"
 #include "SoftwareSerial.h"
 
 uint32_t time_request_sent;// Time stamp for last request to sensor in millis.
@@ -58,7 +58,12 @@ void COZIR::requestHumidity(){
 }
 float COZIR::getResponseHumidity(){
   uint16_t rv = getResponse();
-  return 0.1 * rv;
+
+  Serial.println("getResponseHumidity rv is:");
+  Serial.println(rv);  
+
+
+  return 0.1 * getResponse();
 }
 void COZIR::requestCO2(){
   sendRequest("Z");
@@ -85,9 +90,8 @@ uint16_t COZIR::getResponse(){
   }
   buffer[0] = '\0';  // empty buffer
   int idx = 0;
-  while(CZR_Serial.available())
-  {
-  buffer[idx++] = CZR_Serial.read();
+  while(CZR_Serial.available()){
+    buffer[idx++] = CZR_Serial.read();
   }
   buffer[idx] = '\0';
   uint16_t rv = 0;
@@ -102,5 +106,7 @@ uint16_t COZIR::getResponse(){
             rv = atoi(&buffer[2]);
             break;
   }
+  Serial.println("getResponse rv is:");
+  Serial.println(rv);    
   return rv;
 }
