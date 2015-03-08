@@ -33,7 +33,7 @@ void setup(){
   Serial.begin(9600); 
   delay(5000); // The sensor needs a few seconds to calibrate.
 
-  czr.getResponseCO2(); // Empty sensor serial buffer in case it still contains data.
+  czr.getResponseCelsius(); // Empty sensor serial buffer in case it still contains data.
 }
 
 void loop()
@@ -45,57 +45,52 @@ void loop()
   // Request temperature, humidity and CO2 every minute:
   if ((currentMinute - lastPoll < 59) && (currentMinute > lastPoll) && (waitingForSensor == false)){
 
-    // if (type == 0){
-    //   czr.requestCelsius();
-    // }
-    // if (type == 1){
-    //   czr.requestHumidity();      
-    // }
-    // if (type == 2) {
-    //   czr.requestCO2();
-    //   lastPoll = currentMinute;      
-    //   if (currentMinute >= 59){ // Reset minute counter at end of the hour
-    //     lastPoll = 0;
-    //   }
-    // }
-    czr.requestHumidity();
-    lastPoll = currentMinute;    
+    if (type == 0){
+      czr.requestCelsius();
+    }
+    if (type == 1){
+      czr.requestHumidity();      
+    }
+    if (type == 2) {
+      czr.requestCO2();
+      lastPoll = currentMinute;      
+      if (currentMinute >= 59){ // Reset minute counter at end of the hour
+        lastPoll = 0;
+      }
+    } 
     waitingForSensor = true; // Don't allow data requests until sensor's buffer has been read.
   }
   else if (waitingForSensor) { // A request has been made, so now we can ask the sensor to return something
     float response;
-    response = czr.getResponseHumidity();
-    Serial.println("humidity:");
-    Serial.println(response);
 
-    // if (type == 2) { // Reversed order because of type++ after receiving useful data.
-    //   response = (float) czr.getResponseCO2();
-    //   if (response != (uint16_t) -1) {
-    //     Serial.println("CO2:");
-    //   }
-    // }
-    // if (type == 1){
-    //   response = czr.getResponseHumidity();
-    //   if (response != (uint16_t) -1) {
-    //     Serial.println("humidity:");
-    //   }
-    // }
-    // if (type == 0){
-    //   response = czr.getResponseCelsius();
-    //   if (response != (uint16_t) -1) {
-    //     Serial.println("temperature:");
-    //   }
-    // }
+    if (type == 0){
+      response = (float) czr.getResponseCelsius();
+      if (response != (uint16_t) -1) {
+        Serial.println("temperature:");
+      }
+    }
+    if (type == 1){
+      response = (float) czr.getResponseHumidity();
+      if (response != (uint16_t) -1) {
+        Serial.println("humidity:");
+      }
+    }
+    if (type == 2) {
+      response = (float) czr.getResponseCO2();
+      if (response != (uint16_t) -1) {
+        Serial.println("CO2:");
+      }
+    }
     handleResponse(response);
   }
 }
 byte handleResponse(float response){
   if (response != (uint16_t) -1) {
-    // type++;
-    // if (type > 2){
-    //   type = 0;
-    // }
+    type++;
+    if (type > 2){
+      type = 0;
+    }
     waitingForSensor = false;
-    //Serial.println(response);
+    Serial.println(response);
   }
 }

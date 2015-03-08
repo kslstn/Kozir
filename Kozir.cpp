@@ -53,23 +53,31 @@ float COZIR::getResponseCelsius(){
     }    
   }
 }
-void COZIR::requestHumidity(){
+void COZIR::requestHumidity(){  
   sendRequest("H");
 }
 float COZIR::getResponseHumidity(){
   uint16_t rv = getResponse();
 
-  Serial.println("getResponseHumidity rv is:");
-  Serial.println(rv);  
-
-
-  return 0.1 * getResponse();
+  if (rv == RESPONSE_NOT_READY){
+    return RESPONSE_NOT_READY;
+  }
+  else{
+    return 0.1 * getResponse();
+  }
 }
 void COZIR::requestCO2(){
   sendRequest("Z");
 }
 float COZIR::getResponseCO2(){ // This can be returned as uint16_t as well.
-  return getResponse();
+  uint16_t rv = getResponse();
+
+  if (rv == RESPONSE_NOT_READY){
+    return RESPONSE_NOT_READY;
+  }
+  else{
+    return getResponse();
+  }
 }
 
 /////////////////////////////////////////////////////////
@@ -105,8 +113,6 @@ uint16_t COZIR::getResponse(){
     default :
             rv = atoi(&buffer[2]);
             break;
-  }
-  Serial.println("getResponse rv is:");
-  Serial.println(rv);    
+  }  
   return rv;
 }

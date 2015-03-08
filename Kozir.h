@@ -29,6 +29,7 @@ class COZIR
   public:
 	COZIR(SoftwareSerial&);// : CZR_Serial(nss)
  
+ 	// You may want to make the getResponse() function public and get rid of getResponseCelsius, getResponseHumidity and getResponseCO2. If you handle the conversion of the data yourself, that saves a few if statements.
 	void requestCelsius();  
 	float getResponseCelsius();  
 	void requestHumidity();  
